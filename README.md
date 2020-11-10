@@ -1,6 +1,6 @@
 # IP Tracker
 
-IP Tracker is a Python script whitch you can use in order to receive IP informations.
+IP Tracker is a Python script which you can use in order to receive IP informations.
 
 It's totally free and ready to use. You can install it using the guide below and start using it without any problem whatsoever.
 
