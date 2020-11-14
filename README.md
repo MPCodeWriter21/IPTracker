@@ -60,3 +60,26 @@ You can enter command bellow or install libraries manually
 #### whois
 
 > pip install whois
+
+##Usage
+
+> python run.py [OPTIONS]
+
+    --hostname, -name, -ip   <HOSTNAME or IP ADDRESS>        - if sets, won't see Enter Target IP
+                                                               message
+    --whois, -w              <True or False>                 - if sets as True, IP will be WHOISed
+                                                               without prompt
+                                                             - if sets as False, IP won't be
+                                                               WHOISed without prompt
+    --socks-proxy, -s        [<SOCKS5 Proxy> : <Proxy Port>] - sets SOCKS5 proxy to WHOIS ip
+    --http-proxy, -h         [<HTTP Proxy> : <Proxy Port>]   - sets HTTP/HTTPS proxy to WHOIS ip
+    --myip, -m                                               - use this switch to track your ip
+    --help, -help
+
+### Example
+
+> python run.py -m --whois True
+It will track your IP and WHOIS it without prompt
+
+> python run.py -name google.com
+It will track Google.com
