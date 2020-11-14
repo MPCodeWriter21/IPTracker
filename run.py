@@ -3,29 +3,57 @@ try:
 	from time import sleep
 	from bs4 import BeautifulSoup
 	import whois as Whois
+	from sys import argv as args
 except ModuleNotFoundError as e:
 	print ("\033[91mCouldn't import library: \033[33m" + str(e))
-	print ("\033[91mPlease install requirements: \033[33mpip install -r requirements.txt")
+	print ("\033[91mPlease install requirements: \033[33mpip install -r requirements.txt\033[0m")
 	exit()
 
 
 
 e = '\033[1;37m==============================================='
 ua={"User-Agent": "Mozilla/5.0 (Linux; Android 5.1; A1603 Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.121 Mobile Safari/537.36"}
+proxy = False
+sproxy = ''
+hproxy = ''
 
-o = '\033[0;34m[+]\033[1;37m MAPS         \033[0;31m:\033[0;32m '
+R = '\033[91m'
+G = '\033[92m'
+P = '\033[95m'
+W = '\033[1;37m'
+Y = '\033[93m'
+C = '\033[1;96m'
+c = '\033[0;96m'
+r = '\033[0;31m'
 
-banner = e + """\033[91m
+#o = '\033[0;34m[+]\033[1;37m MAPS         \033[0;31m:\033[0;32m '
+
+banner = f"""{e + R}
  ___ ____    _____               _
 |_ _|  _ \  |_   _| __ __ _  ___| | _____ _ __
  | || |_) |   | || '__/ _` |/ __| |/ / _ \ '__|
  | ||  __/    | || | | (_| | (__|   <  __/ |
-|___|_|  \033[92mv\033[33m1.0\033[91m |_||_|  \__,_|\___|_|\_\___|_|
-\033[1;37m===============================================
-\033[1;37mBlog    \033[0;31m :\033[0;96m https://www.\033[1;96mCodeWriter21\033[0;96m.blogsky.com
-\033[1;37mGithub  \033[0;31m :\033[0;96m http://www.GitHub.com/\033[1;96mMPCodeWriter21
-\033[1;37mTelegram\033[0;31m :\033[0;96m https://www.Telegram.me/\033[1;96mCodeWriter21
-\033[1;37m==============================================="""
+|___|_|  {G}v\033[33m1.0{R} |_||_|  \__,_|\___|_|\_\___|_|
+{W}===============================================
+{W}Blog    {r} :{c} https://www.{C}CodeWriter21{c}.blogsky.com
+{W}Github  {r} :{c} http://www.GitHub.com/{C}MPCodeWriter21
+{W}Telegram{r} :{c} https://www.Telegram.me/{C}CodeWriter21
+{W}==============================================="""
+
+help = f"""
+{G}usage: {P}python {W}run.py [{Y}OPTIONS{W}]
+
+\t{Y}--hostname{W}, {Y}-name{W}, {Y}-ip{W} \t <{P}HOSTNAME{W} or {P}IP ADDRESS{W}>        - if sets, won't see Enter Target IP
+\t                       \t                                   message
+\t{Y}--whois{W}, {Y}-w{W}            \t <{P}True{W} or {P}False{W}>                 - if sets as True, IP will be whoised
+\t                                                           without prompt
+\t                       \t                                 - if sets as False, IP won't be
+\t                                                           whoised without prompt
+\t{Y}--socks-proxy{W}, {Y}-s{W}      \t [<{P}SOCKS5 Proxy{W}> : <{P}Proxy Port{W}>] - sets SOCKS5 proxy to whois ip
+\t{Y}--http-proxy{W}, {Y}-h{W}       \t [<{P}HTTP Proxy{W}> : <{P}Proxy Port{W}>]   - sets HTTP/HTTPS proxy to whois ip
+\t{Y}--myip{W}, {Y}-m{W}             \t                                 - use this switch to track your ip
+\t{Y}--help{W}, {Y}-help{W}          \t                                 - shows this help text
+"""
 
 #Checks if user is connected to Internet
 def check_connection():
@@ -85,6 +113,11 @@ def known(word, data):
 def whois1(ip):
 	try:
 		url = "https://www.whois.com/whois/" + ip
+		if proxy:
+			if hproxy:
+				prx = {'http': 'http://'+hproxy, 'https': 'http://'+hproxy }
+			if sproxy:
+				prx = {'http': 'socks5://'+sproxy, 'https': 'socks5://'+sproxy }
 		req = requests.get(url, ua)
 		soup = BeautifulSoup(req.text, 'html.parser')
 		sleep(2)
@@ -136,11 +169,45 @@ def exit():
 
 #Main Function Of Script
 def run():
+	print (banner)
+	check_connection()
+	name = ''
+	bwhois = None
+	global proxy, sproxy, hproxy
+	for i in range(len(args)):
+		if args[i] == '-help' or args[i] == '--help':
+			print (help)
+			exit()
+		
+		if args[i] == '-m' or args[i] == '--myip':
+			name = requests.get("http://icanhazip.com/").content.decode()
+			name = name[:len(name)-1]
+		
+		try:
+			if args[i] == '--hostname' or args[i] == '-name' or args[i] == '-ip':
+				name = args[i+1]
+			if args[i] == '--whois' or args[i] == '-w':
+				if args[i+1].lower() == 'true':
+					bwhois = True
+				elif args[i+1].lower() == 'false':
+					bwhois = False
+				else:
+					print (f"\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  \033[91m'{args[i]}' needs True or False as argument!\033[0m")
+					exit()
+			if args[i] == '--socks-proxy' or args[i] == '-s':
+				proxy = True
+				sproxy = args[i+1]
+			if args[i] == '--http-proxy' or args[i] == '-h':
+				proxy = True
+				hproxy = args[i+1]
+		except IndexError:
+			print (f"\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  \033[91m'{args[i]}' needs an argument!\033[0m")
+			exit()
+	
 	try:
 		#Takes input and checks it
-		print (banner)
-		check_connection()
-		name = input("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Enter Target IP or Hosname\033[31;1m :\033[32;1m ")
+		if not name:
+			name = input("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Enter Target IP or Hosname\033[31;1m :\033[32;1m ")
 		ip = name
 		try:
 			if not name:
@@ -244,8 +311,10 @@ def run():
 		del data2
 
 		#Asks user to WHOIS IP
-		who = input("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Do You Want To Try WHOIS \033[1;93m"+name+"\033[37;1m?(\033[32mY\033[0m/\033[31;1mN\033[37;1m) \033[31;1m:\033[32;1m ").lower()
-		if who == 'y':
+		who = ''
+		if bwhois is None:
+			who = input("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Do You Want To Try WHOIS \033[1;93m"+name+"\033[37;1m?(\033[32mY\033[0m/\033[31;1mN\033[37;1m) \033[31;1m:\033[32;1m ").lower()
+		if who == 'y' or bwhois:
 			print ("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Please Wait\033[0m")
 			whois(name)
 			whois1(ip)
