@@ -61,7 +61,7 @@ You can enter command bellow or install libraries manually
 
 > pip install whois
 
-##Usage
+## Usage
 
 > python run.py [OPTIONS]
 
