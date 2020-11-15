@@ -11,11 +11,12 @@ except ModuleNotFoundError as e:
 
 
 
-e = '\033[1;37m==============================================='
 ua={"User-Agent": "Mozilla/5.0 (Linux; Android 5.1; A1603 Build/LMY47I; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/43.0.2357.121 Mobile Safari/537.36"}
 proxy = False
 sproxy = ''
 hproxy = ''
+
+end = '\033[0m'
 
 R = '\033[91m'
 G = '\033[92m'
@@ -25,6 +26,12 @@ Y = '\033[93m'
 C = '\033[1;96m'
 c = '\033[0;96m'
 r = '\033[0;31m'
+
+a = '\033[36;1m[\033[35;1m=\033[36;1m] ' + end
+p = '\033[1;34m[\033[1;92m+\033[1;34m] ' + end
+n = '\033[1;34m[\033[1;93m-\033[1;34m] ' + end
+
+e = W + '===============================================' + end
 
 #o = '\033[0;34m[+]\033[1;37m MAPS         \033[0;31m:\033[0;32m '
 
@@ -55,20 +62,30 @@ help = f"""
 \t{Y}--help{W}, {Y}-help{W}          \t                                 - shows this help text
 """
 
+#Prints Exit and then exits
+def exit(text = ''):
+	if text:
+		print (text)
+		print (e)
+	sys.exit(a + "\033[31;1mExit" + end)
+
 #Checks if user is connected to Internet
 def check_connection():
-	sys.stdout.write("\033[1;34m[\033[1;92m+\033[1;34m]\033[93m  Checking Internet Connection...\r\033[0m")
-	sys.stdout.flush()
+	print (a + "\033[93mChecking Internet Connection...\r\033[0m", end = '')
 	try:
 		requests.get("https://ip-api.com")
-		sys.stdout.write('                                    \r')
-		sys.stdout.flush()
+		print ('                                    \r', end = '')
 	except requests.exceptions.ConnectionError:
-		sys.stdout.write('                                    \r')
-		sys.stdout.flush()
-		sys.exit("\033[36;1m[\033[1;91m-\033[36;1m]\033[31m  \033[91mConnection Error!!\n\033[36;1m[\033[1;91m-\033[36;1m]  \033[31mCheck your Internet connection and your VPN/Proxy/DNS if you are using...\033[0m")
-	sys.stdout.write('                                    \r')
-	sys.stdout.flush()
+		print ('                                    \r', end = '')
+		exit(n + "\033[91mConnection Error!!\n" + 
+			n + "\033[31mCheck your Internet connection and your VPN/Proxy/DNS if you are using..." + end)
+	except KeyboardInterrupt:
+		print ('                                    \r', end = '')
+		exit('\r' + n + '\033[91mCancelled!' + end)
+	except:
+		print ('                                    \r', end = '')
+		exit(n + '\033[91mAn unknown error occurred!!' + end)
+	print ('                                    \r', end = '')
 
 
 #Finds the IP of Host by HostName
@@ -98,7 +115,7 @@ def unknown(word):
 	spaces = '            '
 	for l in word:
 		spaces += '\b'
-	print ('\033[1;34m[\033[1;93m-\033[1;34m]\033[1;37m ',word, spaces, '\033[1;91m:','\033[2;33m Unknown\033[0m')
+	print (n + word + spaces + '\033[1;91m: \033[2;33m Unknown' + end)
 
 #Prints the word and its value(actually information about it)
 def known(word, data):
@@ -107,7 +124,7 @@ def known(word, data):
 	spaces = '            '
 	for l in word:
 		spaces += '\b'
-	print ('\033[1;34m[\033[1;92m+\033[1;34m]\033[1;37m ',word, spaces, '\033[1;91m:\033[0;32m ' , str(data))
+	print (p + W + word + spaces + '\033[1;91m:\033[0;32m ' + str(data))
 
 #Tries to get WHOIS information from Whois.com
 def whois1(ip):
@@ -133,16 +150,16 @@ def whois1(ip):
 			index = l.find(':')
 			data.append([l[:index], l[index+1:]])
 		if not data:
-			print("\033[36;1m[\033[1;91m-\033[36;1m]  \033[95mCouldn't find WHOIS data!!\033[0m")
+			print(n + "\033[95mCouldn't find WHOIS data!!" + end)
 		else:
 			for d in data:
 				known(d[0], d[1])
 	except KeyboardInterrupt:
-		print('\r\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  Cancelled!\033[0m')
+		exit('\r' + n + '\033[91mCancelled!' + end)
 	except AttributeError:
-		print('\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  An error occurred: Try opening "{}"\033[0m'.format(url))
+		exit(n + f'\033[91mAn error occurred: Try opening "{url}"' + end)
 	except:
-		print('\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  An unknown error occurred!!\033[0m')
+		exit(n + '\033[91mAn unknown error occurred!!' + end)
 	print (e)
 
 def whois(ip):
@@ -158,14 +175,10 @@ def whois(ip):
 					for i in query[item]:
 						known(item, i)
 	except KeyboardInterrupt:
-		print('\r\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  Cancelled!\033[0m')
+		exit(f'\r' + n + '\033[91mCancelled!' + end)
 	except:
 		return
 	print (e)
-
-#Prints Exit and then exits
-def exit():
-	sys.exit("\033[36;1m[\033[35;1m=\033[36;1m]\033[31;1m  Exit\033[0m")
 
 #Main Function Of Script
 def run():
@@ -176,8 +189,7 @@ def run():
 	global proxy, sproxy, hproxy
 	for i in range(len(args)):
 		if args[i] == '-help' or args[i] == '--help':
-			print (help)
-			exit()
+			ezit(help)
 		
 		if args[i] == '-m' or args[i] == '--myip':
 			name = requests.get("http://icanhazip.com/").content.decode()
@@ -192,8 +204,7 @@ def run():
 				elif args[i+1].lower() == 'false':
 					bwhois = False
 				else:
-					print (f"\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  \033[91m'{args[i]}' needs True or False as argument!\033[0m")
-					exit()
+					exit(n + "\033[91m'{args[i]}' needs True or False as argument!" + end)
 			if args[i] == '--socks-proxy' or args[i] == '-s':
 				proxy = True
 				sproxy = args[i+1]
@@ -201,38 +212,37 @@ def run():
 				proxy = True
 				hproxy = args[i+1]
 		except IndexError:
-			print (f"\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  \033[91m'{args[i]}' needs an argument!\033[0m")
-			exit()
+			exit(a + f"\033[91m\033[91m'{args[i]}' needs an argument!" + end)
 	
 	try:
 		#Takes input and checks it
 		if not name:
-			name = input("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Enter Target IP or Hosname\033[31;1m :\033[32;1m ")
+			name = input(a + "\033[37;1mEnter Target IP or Hosname\033[31;1m :\033[32;1m ")
 		ip = name
 		try:
 			if not name:
-				print("\033[36;1m[\033[1;91m-\033[36;1m]\033[31m  Input Is Empty!!\033[0m")
-				self_ip = input("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Do you want to track your IP?(\033[32mY\033[0m/\033[31;1mN\033[37;1m) \033[31;1m:\033[32;1m ").lower()
+				print (n + "\033[31mInput Is Empty!!" + end)
+				self_ip = input(a + "Do you want to track your IP?(\033[32mY\033[0m/\033[31;1mN\033[37;1m) \033[31;1m:\033[32;1m ").lower()
 				if self_ip == 'y':
 					ip = requests.get("http://icanhazip.com/").content.decode()
 					ip = ip[:len(ip)-1]
 					name = ip
 				else:
-					print(e)
+					print (e)
 					exit()
 			if not is_IP(name):
 				ip = get_ip(name)
 				if not is_IP(ip):
-					sys.exit("\033[36;1m[\033[1;91m-\033[36;1m]\033[31m  Enterd Data is wrong!\033[0m")
+					exit(n + "\033[91mEnterd Data is wrong!" + end)
 			os.system('clear')
 			print(banner)
-			print("\033[0;36mSearching for \033[1;96m"+(name if ip == name else (name+' \033[1;91m(\033[1;36m '+ip+' \033[1;91m)'))+"\033[0m")
+			print(a + "\033[0;36mSearching for \033[1;96m"+(name if ip == name else (name+' \033[1;91m(\033[1;36m '+ip+' \033[1;91m)'))+"\033[0m")
 			print(e)
 			if not name:
 				name = ip
 		except KeyboardInterrupt:
-			sys.exit('\r\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  Cancelled!\033[0m')
-		print ("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Please Wait\033[0m")
+			exit('\r' + n + '\033[91mCancelled!' + end)
+		print (a + "\033[37;1mPlease Wait" + end)
 		sleep(2)
 		print (e)
 		#Tries to get information about IP
@@ -240,7 +250,8 @@ def run():
 		try:
 			data = requests.get(url).content.decode()
 		except requests.exceptions.ConnectionError:
-			sys.exit("\033[36;1m[\033[1;91m-\033[36;1m]\033[31m  \033[91mConnection Error!!\n\033[36;1m[\033[1;91m-\033[36;1m]  \033[31mCheck your Internet connection and your VPN/Proxy/DNS if you are using...\033[0m")
+			exit(n + "\033[91mConnection Error!!\n" +
+				n + "\033[31mCheck your Internet connection and your VPN/Proxy/DNS if you are using..." + end)
 		data2 = json.loads(data)
 		del data
 		#Prints Information of the IP
@@ -297,35 +308,36 @@ def run():
 		except KeyError:
 			unknown('ZIP')
 		try:
-			print ('\033[1;34m[\033[1;92m+\033[1;34m]\033[1;37m  MAPS          \033[1;91m:\033[0;32m  https://www.google.co.id/maps/place/' + str(data2["lat"]) + ',' +  str(data2["lon"]))
+			known('MAPS', 'https://www.google.co.id/maps/place/' + str(data2["lat"]) + ',' +  str(data2["lon"]))
 		except KeyError:
-			print ('\033[1;34m[\033[1;93m-\033[1;34m]\033[1;37m  MAPS          \033[1;91m:\033[2;33m  Unknown\033[0m')
+			unknown('MAPS')
 		try:
 			if not str(data2['status']) == "fail":
-				print ('\033[1;34m[\033[1;92m+\033[1;34m]\033[1;37m  STATUS        \033[1;91m:\033[1;32m ', str(data2["status"]))
+				print (n + '\033[1;37mSTATUS      \033[1;91m:\033[1;32m ' + str(data2["status"]))
 			else:
-				print ('\033[1;34m[\033[1;92m+\033[1;34m]\033[1;37m  STATUS        \033[1;91m:\033[1;91m ', str(data2["status"]))
+				known('STATUS', str(data2["status"]))
 		except KeyError:
-			print ('\033[1;34m[\033[1;93m-\033[1;34m]\033[1;37m  STATUS        \033[1;91m:\033[1;91m Unknown\033[0m')
+			unknown('STATUS')
 		print(e)
 		del data2
 
 		#Asks user to WHOIS IP
 		who = ''
 		if bwhois is None:
-			who = input("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Do You Want To Try WHOIS \033[1;93m"+name+"\033[37;1m?(\033[32mY\033[0m/\033[31;1mN\033[37;1m) \033[31;1m:\033[32;1m ").lower()
+			who = input(a + "\033[37;1mDo You Want To Try WHOIS \033[1;93m"+name+"\033[37;1m?(\033[32mY\033[0m/\033[31;1mN\033[37;1m) \033[31;1m:\033[32;1m ").lower()
 		if who == 'y' or bwhois:
-			print ("\033[36;1m[\033[35;1m=\033[36;1m]\033[37;1m  Please Wait\033[0m")
+			print (a + "\033[37;1mPlease Wait" + end)
 			whois(name)
 			whois1(ip)
-		else:
+		elif bwhois is None:
 			print (e)
 		#Exits
 		exit()
 	except KeyboardInterrupt:
-		sys.exit('\r\033[36;1m[\033[1;91m-\033[36;1m]\033[91m  Cancelled!\033[0m')
+		exit('\r' + n + '\033[91mCancelled!' + end)
 	except requests.exceptions.ConnectionError:
-		sys.exit("\033[36;1m[\033[1;91m-\033[36;1m]\033[31m  \033[91mConnection Error!!\n\033[36;1m[\033[1;91m-\033[36;1m]  \033[31mCheck your Internet connection and your VPN/Proxy/DNS if you are using...\033[0m")
+		exit(n + "\033[91mConnection Error!!\n" + 
+			n + "\033[31mCheck your Internet connection and your VPN/Proxy/DNS if you are using..." + end)
 
 
 if __name__=='__main__':
