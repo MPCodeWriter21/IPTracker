@@ -189,7 +189,7 @@ def run():
 	global proxy, sproxy, hproxy
 	for i in range(len(args)):
 		if args[i] == '-help' or args[i] == '--help':
-			ezit(help)
+			exit(help)
 		
 		if args[i] == '-m' or args[i] == '--myip':
 			name = requests.get("http://icanhazip.com/").content.decode()
