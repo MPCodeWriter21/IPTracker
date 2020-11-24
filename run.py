@@ -82,6 +82,8 @@ def check_connection():
 	except KeyboardInterrupt:
 		print ('                                    \r', end = '')
 		exit('\r' + n + '\033[91mCancelled!' + end)
+	except EOFError:
+		exit()
 	except:
 		print ('                                    \r', end = '')
 		exit(n + '\033[91mAn unknown error occurred!!' + end)
@@ -156,6 +158,8 @@ def whois1(ip):
 				known(d[0], d[1])
 	except KeyboardInterrupt:
 		exit('\r' + n + '\033[91mCancelled!' + end)
+	except EOFError:
+		exit()
 	except AttributeError:
 		exit(n + f'\033[91mAn error occurred: Try opening "{url}"' + end)
 	except:
@@ -176,6 +180,8 @@ def whois(ip):
 						known(item, i)
 	except KeyboardInterrupt:
 		exit(f'\r' + n + '\033[91mCancelled!' + end)
+	except EOFError:
+		exit()
 	except:
 		return
 	print (e)
@@ -335,6 +341,8 @@ def run():
 		exit()
 	except KeyboardInterrupt:
 		exit('\r' + n + '\033[91mCancelled!' + end)
+	except EOFError:
+		exit()
 	except requests.exceptions.ConnectionError:
 		exit(n + "\033[91mConnection Error!!\n" + 
 			n + "\033[31mCheck your Internet connection and your VPN/Proxy/DNS if you are using..." + end)
