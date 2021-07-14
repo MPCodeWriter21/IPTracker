@@ -63,7 +63,7 @@ You can enter command bellow or install libraries manually
 
 ## Usage
 
-> python run.py [OPTIONS]
+> python main.py [OPTIONS]
 
     --hostname, -name, -ip   <HOSTNAME or IP ADDRESS>        - if sets, won't see Enter Target IP
                                                                message
@@ -78,11 +78,11 @@ You can enter command bellow or install libraries manually
 
 ### Example
 
-> python run.py -m --whois True
+> python main.py -m --whois True
 
 It will track your IP and WHOIS it without prompt
 
 
-> python run.py -name google.com
+> python main.py -name google.com
 
 It will track Google.com
