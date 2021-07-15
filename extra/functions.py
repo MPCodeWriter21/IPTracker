@@ -11,7 +11,6 @@ from colorama import AnsiToWin32 as AnsiToWin
 from .variables import Colors, a, p, n, http_proxy, socks5_proxy, proxy, UserAgent, horizontal_line
 
 __all__ = ['print', 'input', 'exit', 'horizontal_line', 'check_connection', 'get_ip', 'is_ip', 'unknown', 'known',
-           'whois1',
            'whois']
 
 ATW = AnsiToWin(sys.stdout)
@@ -94,7 +93,7 @@ def unknown(word):
     spaces = '            '
     for _ in word:
         spaces += '\b'
-    print(n + word + spaces + Colors.Red + ':' + Colors.Yellow + '  Unknown' + Colors.Default)
+    print(n + word + spaces + Colors.Red + ':' + Colors.Yellow + 'Unknown' + Colors.Default)
 
 
 # Prints the word and its value(actually information about it)
@@ -104,14 +103,14 @@ def known(word, data):
     spaces = '            '
     for _ in word:
         spaces += '\b'
-    print(p + Colors.White + word + spaces + Colors.Red + ':' + Colors.Green + str(data))
+    print(p + Colors.White + word + spaces + Colors.Red + ':' + Colors.Green + str(data).strip())
 
 
 # Tries to get WHOIS information from Whois.com
-def whois1(ip):
+def whois(name):
     try:
         session.headers['User-Agent'] = UserAgent
-        url = "https://www.whois.com/whois/" + ip
+        url = "https://www.whois.com/whois/" + name
         if proxy:
             prx = {}
             if http_proxy:
@@ -147,25 +146,3 @@ def whois1(ip):
     except:
         print(n + Colors.Red + 'An unknown error occurred!!' + Colors.Default)
         return
-    print(Colors.White + horizontal_line() + Colors.Default, end='')
-
-
-def whois(ip):
-    try:
-        print(Colors.White + horizontal_line() + Colors.Default, end='')
-        query = Whois.query(ip)
-        query = query.__dict__
-        if query:
-            for item in query:
-                if not type(query[item]) is set:
-                    known(item, query[item])
-                else:
-                    for i in query[item]:
-                        known(item, i)
-    except KeyboardInterrupt:
-        exit(f'\r' + n + Colors.Red + 'Cancelled!' + Colors.Default)
-    except EOFError:
-        exit()
-    except:
-        return
-    print(Colors.White + horizontal_line() + Colors.Default, end='')

@@ -179,11 +179,7 @@ def main():
         if who == 'y' or bwhois:
             print(a + Colors.White + "Please Wait" + Colors.Default)
             try:
-                whois1(name)
-            except Exception as ex:
-                print(n + Colors.Red + str(type(ex)) + ': ' + Colors.Yellow + str(ex) + Colors.Default)
-            try:
-                whois(ip)
+                whois(name)
             except Exception as ex:
                 print(n + Colors.Red + str(type(ex)) + ': ' + Colors.Yellow + str(ex) + Colors.Default)
         elif bwhois is None:
