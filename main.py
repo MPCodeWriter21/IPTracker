@@ -82,7 +82,7 @@ def main():
                 ip = get_ip(name)
                 if not is_ip(ip):
                     exit(n + Colors.Red + 'Entered Data is wrong!' + Colors.Default)
-            os.system('clear')
+            os.system('clear || cls')
             print(banner)
             print(a + Colors.Cyan + "Searching for " + Colors.BCyan + (
                 name if ip == name else (
